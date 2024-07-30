@@ -1,6 +1,6 @@
 use std::{cell::{BorrowMutError, RefCell}, error::Error, fmt::Display, path::PathBuf, rc::Rc};
 
-use fltk::{app::{self, App, Receiver, Sender}, button::Button, dialog::{self, FileDialogOptions, FileDialogType}, enums::FrameType, frame::Frame, group::{Group, Tile}, image::Image, prelude::{ButtonExt, GroupExt, ImageExt, WidgetBase, WidgetExt}, window::Window};
+use fltk::{app::{self, App, Receiver, Sender}, button::Button, dialog::{self, FileDialogOptions, FileDialogType}, enums::FrameType, frame::Frame, group::{Group, Tile}, image::{Image, SharedImage}, prelude::{ButtonExt, GroupExt, ImageExt, WidgetBase, WidgetExt}, window::Window};
 
 const GROUP_FRAME: FrameType = FrameType::GtkThinUpBox;
 const BUTTON_FRAME: FrameType = FrameType::GtkRoundUpFrame;
@@ -15,7 +15,8 @@ pub enum InterfaceMessage {
 pub struct GUI {
     ux_app: App,
     ux_main_window: Window,
-    image_loaded: Rc<RefCell<Option<Image>>>,
+    image_loaded: Rc<RefCell<Option<SharedImage>>>,
+    image_frame: Frame,
     msg_sender: Sender<InterfaceMessage>,
     msg_receiver: Receiver<InterfaceMessage>,
 }//end struct GUI
@@ -34,13 +35,14 @@ impl GUI {
     }//end get_receiver()
 
     // Changes the displayed image to the one provided
-    pub fn load_image(&mut self, image: Image) -> Result<(),BorrowMutError> {
+    pub fn load_image(&mut self, image: SharedImage) -> Result<(),BorrowMutError> {
         let img_ref_clone = (&mut self.image_loaded).clone();
         let img_ref_clone_res = img_ref_clone.as_ref().try_borrow_mut();
         match img_ref_clone_res {
             Err(err) => Err(err),
             Ok(mut img_ref) => {
                 *img_ref = Some(image);
+                self.image_frame.redraw();
                 Ok(())
             },
         }//end matching 
@@ -91,7 +93,8 @@ impl GUI {
             .with_pos(ux_image_group.x() + 10, ux_image_group.y() + 10)
             .with_size(ux_image_group.w() - 20, ux_image_group.h() - 20);
         img_display_frame.set_frame(FrameType::EngravedFrame);
-        let img_ref: Rc<RefCell<Option<Image>>> = Rc::from(RefCell::from(None));
+        ux_image_group.add(&img_display_frame);
+        let img_ref: Rc<RefCell<Option<SharedImage>>> = Rc::from(RefCell::from(None));
         img_display_frame.draw({
             let img_ref_clone = (&img_ref).clone();
             move |f| {
@@ -133,6 +136,7 @@ impl GUI {
             ux_app: csth_app,
             ux_main_window: main_window,
             image_loaded: img_ref,
+            image_frame: img_display_frame,
             msg_sender: s,
             msg_receiver: r,
         }//end struct construction
