@@ -8,8 +8,8 @@ fn main() {
     println!("Hello, world!");
     while gui.wait() {
         match recv.recv() {
-            Some(InterfaceMessage::LoadImage) => {
-                println!("Got told to load an image");
+            Some(InterfaceMessage::LoadImage(img_path)) => {
+                println!("Got told to load an image at {}", img_path.to_string_lossy());
             },
             Some(InterfaceMessage::Quit) => gui.quit(),
             None => (),

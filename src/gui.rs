@@ -1,12 +1,14 @@
-use std::{cell::{BorrowMutError, RefCell}, error::Error, fmt::Display, rc::Rc};
+use std::{cell::{BorrowMutError, RefCell}, error::Error, fmt::Display, path::PathBuf, rc::Rc};
 
-use fltk::{app::{self, App, Receiver, Sender}, enums::FrameType, frame::Frame, group::{Group, Tile}, image::Image, prelude::{GroupExt, ImageExt, WidgetBase, WidgetExt}, window::Window};
+use fltk::{app::{self, App, Receiver, Sender}, button::Button, dialog::{self, FileDialogOptions, FileDialogType}, enums::FrameType, frame::Frame, group::{Group, Tile}, image::Image, prelude::{ButtonExt, GroupExt, ImageExt, WidgetBase, WidgetExt}, window::Window};
 
 const GROUP_FRAME: FrameType = FrameType::GtkThinUpBox;
+const BUTTON_FRAME: FrameType = FrameType::GtkRoundUpFrame;
+const BUTTON_DOWN_FRAME: FrameType = FrameType::GtkRoundDownFrame;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum InterfaceMessage {
-    LoadImage,
+    LoadImage(PathBuf),
     Quit
 }//end enum InterfaceMessage
 
@@ -99,6 +101,31 @@ impl GUI {
                     img.draw(f.x(), f.y(), f.w(), f.h());
                 }//end if we have an image to draw from
         }});
+
+        // define widgets for the button group
+        let mut get_files_btn = Button::default()
+            .with_pos(ux_buton_group.x() + 10, ux_buton_group.y() + 10)
+            .with_size(100, ux_buton_group.h() - 20)
+            .with_label("Get Image");
+        get_files_btn.set_frame(BUTTON_FRAME);
+        get_files_btn.set_down_frame(BUTTON_DOWN_FRAME);
+        get_files_btn.clear_visible_focus();
+        ux_buton_group.add(&get_files_btn);
+        get_files_btn.set_callback({
+            let sender_clone = s.clone();
+            move |_| {
+                let mut dialog = dialog::NativeFileChooser::new(FileDialogType::BrowseFile);
+                dialog.set_option(FileDialogOptions::Preview.union(FileDialogOptions::UseFilterExt));
+                dialog.set_filter("Image File\t*.{jpeg,png,webp,svg,tif,tiff}");
+                dialog.set_title("Select Image File");
+                dialog.show();
+                // make sure dialog didn't have an error or anything
+                let dialog_error = dialog.error_message().unwrap_or_else(|| "".to_string()).replace("No error", "");
+                if dialog_error == "" {
+                    sender_clone.send(InterfaceMessage::LoadImage(dialog.filename()));
+                } else {println!("Encountered dialog error: {dialog_error}");}
+            }//end closure
+        });
 
         // clean up, package stuff together, show window
         main_window.show();
