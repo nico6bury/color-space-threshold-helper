@@ -1,6 +1,14 @@
-use std::{cell::{BorrowMutError, RefCell}, error::Error, fmt::Display, path::PathBuf, rc::Rc};
+use std::{cell::{BorrowMutError, RefCell}, path::PathBuf, rc::Rc};
 
-use fltk::{app::{self, App, Receiver, Sender}, button::Button, dialog::{self, FileDialogOptions, FileDialogType}, enums::FrameType, frame::Frame, group::{Group, Tile}, image::{Image, SharedImage}, prelude::{ButtonExt, GroupExt, ImageExt, WidgetBase, WidgetExt}, window::Window};
+use fltk::app::{self, App, Receiver};
+use fltk::button::Button;
+use fltk::dialog::{self, FileDialogOptions, FileDialogType};
+use fltk::enums::FrameType;
+use fltk::frame::Frame;
+use fltk::image::SharedImage;
+use fltk::group::{Group, Tile};
+use fltk::prelude::{ButtonExt, GroupExt, ImageExt, WidgetBase, WidgetExt};
+use fltk::window::Window;
 
 const GROUP_FRAME: FrameType = FrameType::GtkThinUpBox;
 const BUTTON_FRAME: FrameType = FrameType::GtkRoundUpFrame;
@@ -14,10 +22,10 @@ pub enum InterfaceMessage {
 
 pub struct GUI {
     ux_app: App,
-    ux_main_window: Window,
+    // ux_main_window: Window,
     image_loaded: Rc<RefCell<Option<SharedImage>>>,
     image_frame: Frame,
-    msg_sender: Sender<InterfaceMessage>,
+    // msg_sender: Sender<InterfaceMessage>,
     msg_receiver: Receiver<InterfaceMessage>,
 }//end struct GUI
 
@@ -132,12 +140,13 @@ impl GUI {
 
         // clean up, package stuff together, show window
         main_window.show();
+        main_window.set_callback(move |_| {s.send(InterfaceMessage::Quit)});
         GUI {
             ux_app: csth_app,
-            ux_main_window: main_window,
+            // ux_main_window: main_window,
             image_loaded: img_ref,
             image_frame: img_display_frame,
-            msg_sender: s,
+            // msg_sender: s,
             msg_receiver: r,
         }//end struct construction
     }//end initialize()
