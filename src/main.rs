@@ -1,5 +1,6 @@
+use color_space_threshold_helper::enums::InterfaceMessage;
 use fltk::image::SharedImage;
-use gui::{InterfaceMessage, GUI};
+use gui::GUI;
 
 mod gui;
 
@@ -20,6 +21,8 @@ fn main() {
                 }//end matching whether we loaded the shared image
             },
             Some(InterfaceMessage::Quit) => gui.quit(),
+            Some(InterfaceMessage::Reset) => println!("Reset not yet supported"),
+            Some(InterfaceMessage::ThreshColor(color)) => println!("Thresh COlor not yet supported. {:?}",color),
             None => (),
         }//end matching message received
     }//end main app loop

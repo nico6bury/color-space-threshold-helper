@@ -1,6 +1,7 @@
-use std::{cell::{BorrowMutError, RefCell}, path::PathBuf, rc::Rc};
+use std::{cell::{BorrowMutError, RefCell}, rc::Rc};
 
-use fltk::{app::{self, App, Receiver}, enums::Align, group::{Flex, FlexType}, prelude::ValuatorExt, valuator::HorValueSlider};
+use color_space_threshold_helper::enums::InterfaceMessage;
+use fltk::{app::{self, App, Receiver}, enums::{Align, Color}, group::{Flex, FlexType}, menu::Choice, prelude::{MenuExt, ValuatorExt}, valuator::HorValueSlider};
 use fltk::button::Button;
 use fltk::dialog::{self, FileDialogOptions, FileDialogType};
 use fltk::enums::FrameType;
@@ -13,12 +14,6 @@ use fltk::window::Window;
 const GROUP_FRAME: FrameType = FrameType::GtkThinUpBox;
 const BUTTON_FRAME: FrameType = FrameType::GtkRoundUpFrame;
 const BUTTON_DOWN_FRAME: FrameType = FrameType::GtkRoundDownFrame;
-
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub enum InterfaceMessage {
-    LoadImage(PathBuf),
-    Quit
-}//end enum InterfaceMessage
 
 pub struct GUI {
     ux_app: App,
@@ -91,12 +86,14 @@ impl GUI {
         ux_param_flex.set_margin(10);
         tile_group.add(&ux_param_flex);
 
-        let mut ux_buton_group = Group::default()
+        let mut ux_button_flex = Flex::default()
             .with_pos(0, ux_image_group.h())
             .with_size(main_window.w(), main_window.h() - ux_image_group.h());
-        ux_buton_group.end();
-        ux_buton_group.set_frame(GROUP_FRAME);
-        tile_group.add(&ux_buton_group);
+        ux_button_flex.end();
+        ux_button_flex.set_type(FlexType::Row);
+        ux_button_flex.set_margin(10);
+        ux_button_flex.set_frame(GROUP_FRAME);
+        tile_group.add(&ux_button_flex);
 
         // define widgets for the image group
         let mut img_display_frame = Frame::default()
@@ -117,13 +114,11 @@ impl GUI {
 
         // define widgets for the button group
         let mut get_files_btn = Button::default()
-            .with_pos(ux_buton_group.x() + 10, ux_buton_group.y() + 10)
-            .with_size(100, ux_buton_group.h() - 20)
             .with_label("Get Image");
         get_files_btn.set_frame(BUTTON_FRAME);
         get_files_btn.set_down_frame(BUTTON_DOWN_FRAME);
         get_files_btn.clear_visible_focus();
-        ux_buton_group.add(&get_files_btn);
+        ux_button_flex.add(&get_files_btn);
         get_files_btn.set_callback({
             let sender_clone = s.clone();
             move |_| {
@@ -137,6 +132,42 @@ impl GUI {
                 if dialog_error == "" {
                     sender_clone.send(InterfaceMessage::LoadImage(dialog.filename()));
                 } else {println!("Encountered dialog error: {dialog_error}");}
+            }//end closure
+        });
+
+        let mut reset_btn = Button::default()
+            .with_label("Reset");
+        reset_btn.set_frame(BUTTON_FRAME);
+        reset_btn.set_down_frame(BUTTON_DOWN_FRAME);
+        reset_btn.clear_visible_focus();
+        ux_button_flex.add(&reset_btn);
+        reset_btn.set_callback({
+            let sender_clone = s.clone();
+            move |_| {sender_clone.send(InterfaceMessage::Reset);}
+        });
+
+        let mut color_space_choice = Choice::default();
+        color_space_choice.add_choice("RGB|HSB or HSV|HSL|HSI|LabCIE|YUV");
+        ux_button_flex.add(&color_space_choice);
+
+        let mut thresh_color_btn = Button::default()
+            .with_label("Threshold Color");
+        thresh_color_btn.set_frame(BUTTON_FRAME);
+        thresh_color_btn.set_down_frame(BUTTON_DOWN_FRAME);
+        thresh_color_btn.clear_visible_focus();
+        ux_button_flex.add(&thresh_color_btn);
+        thresh_color_btn.set_callback({
+            let sender_clone = s.clone();
+            move |btn| {
+                let color_res = dialog::color_chooser(
+                    "Choose In-Threshold Color",
+                    dialog::ColorMode::Rgb
+                );
+                if let Some(color) = color_res {
+                    btn.set_color(Color::rgb_color(color.0, color.1, color.2));
+                    btn.redraw();
+                    sender_clone.send(InterfaceMessage::ThreshColor(color));
+                }//end if we got a color
             }//end closure
         });
 
