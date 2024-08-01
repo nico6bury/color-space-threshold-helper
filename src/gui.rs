@@ -1,6 +1,6 @@
 use std::{cell::{BorrowMutError, RefCell}, path::PathBuf, rc::Rc};
 
-use fltk::app::{self, App, Receiver};
+use fltk::{app::{self, App, Receiver}, enums::Align, group::{Flex, FlexType}, prelude::ValuatorExt, valuator::HorValueSlider};
 use fltk::button::Button;
 use fltk::dialog::{self, FileDialogOptions, FileDialogType};
 use fltk::enums::FrameType;
@@ -82,12 +82,14 @@ impl GUI {
         ux_image_group.set_frame(GROUP_FRAME);
         tile_group.add(&ux_image_group);
 
-        let mut ux_param_group = Group::default()
+        let mut ux_param_flex = Flex::default()
             .with_pos(ux_image_group.x() + ux_image_group.w(), 0)
             .with_size(main_window.w() - ux_image_group.w(), ux_image_group.h());
-        ux_param_group.end();
-        ux_param_group.set_frame(GROUP_FRAME);
-        tile_group.add(&ux_param_group);
+        ux_param_flex.end();
+        ux_param_flex.set_type(FlexType::Column);
+        ux_param_flex.set_frame(GROUP_FRAME);
+        ux_param_flex.set_margin(10);
+        tile_group.add(&ux_param_flex);
 
         let mut ux_buton_group = Group::default()
             .with_pos(0, ux_image_group.h())
@@ -137,6 +139,64 @@ impl GUI {
                 } else {println!("Encountered dialog error: {dialog_error}");}
             }//end closure
         });
+
+        // define widgets for the param group
+        let d1_label = Frame::default()
+            .with_label("Depth 1 Min/Max Sliders")
+            .with_align(Align::Bottom.union(Align::Inside));
+        ux_param_flex.add(&d1_label);
+
+        let mut d1l_slider = HorValueSlider::default();
+        d1l_slider.set_minimum(0.);
+        d1l_slider.set_maximum(255.);
+        d1l_slider.set_step(1.,1);
+        d1l_slider.set_value(0.);
+        ux_param_flex.add(&d1l_slider);
+        
+        let mut d1h_slider = HorValueSlider::default();
+        d1h_slider.set_minimum(0.);
+        d1h_slider.set_maximum(255.);
+        d1h_slider.set_step(1.,1);
+        d1h_slider.set_value(255.);
+        ux_param_flex.add(&d1h_slider);
+
+        let d2_label = Frame::default()
+            .with_label("Depth 2 Min/Max Sliders")
+            .with_align(Align::Bottom.union(Align::Inside));
+        ux_param_flex.add(&d2_label);
+
+        let mut d2l_slider = HorValueSlider::default();
+        d2l_slider.set_minimum(0.);
+        d2l_slider.set_maximum(255.);
+        d2l_slider.set_step(1.,1);
+        d2l_slider.set_value(0.);
+        ux_param_flex.add(&d2l_slider);
+        
+        let mut d2h_slider = HorValueSlider::default();
+        d2h_slider.set_minimum(0.);
+        d2h_slider.set_maximum(255.);
+        d2h_slider.set_step(1.,1);
+        d2h_slider.set_value(255.);
+        ux_param_flex.add(&d2h_slider);
+
+        let d3_label = Frame::default()
+            .with_label("Depth 3 Min/Max Sliders")
+            .with_align(Align::Bottom.union(Align::Inside));
+        ux_param_flex.add(&d3_label);
+
+        let mut d3l_slider = HorValueSlider::default();
+        d3l_slider.set_minimum(0.);
+        d3l_slider.set_maximum(255.);
+        d3l_slider.set_step(1.,1);
+        d3l_slider.set_value(0.);
+        ux_param_flex.add(&d3l_slider);
+        
+        let mut d3h_slider = HorValueSlider::default();
+        d3h_slider.set_minimum(0.);
+        d3h_slider.set_maximum(255.);
+        d3h_slider.set_step(1.,1);
+        d3h_slider.set_value(255.);
+        ux_param_flex.add(&d3h_slider);
 
         // clean up, package stuff together, show window
         main_window.show();
