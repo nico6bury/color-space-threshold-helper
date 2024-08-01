@@ -1,6 +1,6 @@
 use std::{cell::{BorrowMutError, RefCell}, rc::Rc};
 
-use color_space_threshold_helper::enums::InterfaceMessage;
+use color_space_threshold_helper::enums::{ColorSpace, InterfaceMessage};
 use fltk::{app::{self, App, Receiver}, enums::{Align, Color}, group::{Flex, FlexType}, menu::Choice, prelude::{MenuExt, ValuatorExt}, valuator::HorValueSlider};
 use fltk::button::Button;
 use fltk::dialog::{self, FileDialogOptions, FileDialogType};
@@ -147,7 +147,7 @@ impl GUI {
         });
 
         let mut color_space_choice = Choice::default();
-        color_space_choice.add_choice("RGB|HSB or HSV|HSL|HSI|LabCIE|YUV");
+        color_space_choice.add_choice(&ColorSpace::get_variants().join("|"));
         ux_button_flex.add(&color_space_choice);
 
         let mut thresh_color_btn = Button::default()
