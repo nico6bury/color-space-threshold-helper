@@ -1,7 +1,7 @@
 use std::{cell::{BorrowMutError, RefCell}, rc::Rc};
 
-use color_space_threshold_helper::enums::{ColorSpace, InterfaceMessage};
-use fltk::{app::{self, App, Receiver}, enums::{Align, Color}, group::{Flex, FlexType}, menu::Choice, prelude::{MenuExt, ValuatorExt}, valuator::HorValueSlider};
+use color_space_threshold_helper::{enums::{ColorSpace, InterfaceMessage}, process::ThreshParams};
+use fltk::{app::{self, App, Receiver}, button::CheckButton, enums::{Align, Color}, group::{Flex, FlexType}, menu::Choice, prelude::{MenuExt, ValuatorExt}, valuator::HorValueSlider};
 use fltk::button::Button;
 use fltk::dialog::{self, FileDialogOptions, FileDialogType};
 use fltk::enums::FrameType;
@@ -14,6 +14,7 @@ use fltk::window::Window;
 const GROUP_FRAME: FrameType = FrameType::GtkThinUpBox;
 const BUTTON_FRAME: FrameType = FrameType::GtkRoundUpFrame;
 const BUTTON_DOWN_FRAME: FrameType = FrameType::GtkRoundDownFrame;
+const PASS_ALIGN: Align = Align::Inside.union(Align::Left);
 
 pub struct GUI {
     ux_app: App,
@@ -22,6 +23,16 @@ pub struct GUI {
     image_frame: Frame,
     // msg_sender: Sender<InterfaceMessage>,
     msg_receiver: Receiver<InterfaceMessage>,
+    ux_d1l_slider: HorValueSlider,
+    ux_d1h_slider: HorValueSlider,
+    ux_d1_pass_ck: CheckButton,
+    ux_d2l_slider: HorValueSlider,
+    ux_d2h_slider: HorValueSlider,
+    ux_d2_pass_ck: CheckButton,
+    ux_d3l_slider: HorValueSlider,
+    ux_d3h_slider: HorValueSlider,
+    ux_d3_pass_ck: CheckButton,
+    ux_color_space_choice: Choice,
 }//end struct GUI
 
 impl GUI {
@@ -50,6 +61,26 @@ impl GUI {
             },
         }//end matching 
     }//end load_image()
+
+    /// Tries to get threshold parameters from widgets
+    pub fn get_thresh_params(&self) -> Option<ThreshParams> {
+        let color_space = ColorSpace::from_str(&self.ux_color_space_choice.choice().unwrap_or_else(|| "".to_string()));
+        if color_space.is_none() {return None;}
+        let color_space = color_space.unwrap();
+        
+        Some(ThreshParams {
+            color_space,
+            depth1_min: self.ux_d1l_slider.value() as u8,
+            depth1_max: self.ux_d1h_slider.value() as u8,
+            depth1_pass: self.ux_d1_pass_ck.is_checked(),
+            depth2_min: self.ux_d2l_slider.value() as u8,
+            depth2_max: self.ux_d2h_slider.value() as u8,
+            depth2_pass: self.ux_d2_pass_ck.is_checked(),
+            depth3_min: self.ux_d3l_slider.value() as u8,
+            depth3_max: self.ux_d3h_slider.value() as u8,
+            depth3_pass: self.ux_d3_pass_ck.is_checked(),
+        })
+    }//end get_thresh_params()
 
     pub fn initialize() -> GUI {
         // set up app, main window, channel stuff
@@ -190,6 +221,11 @@ impl GUI {
             .with_align(Align::Bottom.union(Align::Inside));
         ux_param_flex.add(&d1_label);
 
+        let d1_pass_chk = CheckButton::default()
+            .with_label("Depth 1 Pass")
+            .with_align(PASS_ALIGN);
+        ux_param_flex.add(&d1_pass_chk);
+
         let mut d1l_slider = HorValueSlider::default();
         d1l_slider.set_minimum(0.);
         d1l_slider.set_maximum(255.);
@@ -204,10 +240,18 @@ impl GUI {
         d1h_slider.set_value(255.);
         ux_param_flex.add(&d1h_slider);
 
+        let spacer_frame_1 = Frame::default();
+        ux_param_flex.add(&spacer_frame_1);
+
         let d2_label = Frame::default()
             .with_label("Depth 2 Min/Max Sliders")
             .with_align(Align::Bottom.union(Align::Inside));
         ux_param_flex.add(&d2_label);
+
+        let d2_pass_chk = CheckButton::default()
+            .with_label("Depth 2 Pass")
+            .with_align(PASS_ALIGN);
+        ux_param_flex.add(&d2_pass_chk);
 
         let mut d2l_slider = HorValueSlider::default();
         d2l_slider.set_minimum(0.);
@@ -223,10 +267,18 @@ impl GUI {
         d2h_slider.set_value(255.);
         ux_param_flex.add(&d2h_slider);
 
+        let spacer_frame_2 = Frame::default();
+        ux_param_flex.add(&spacer_frame_2);
+
         let d3_label = Frame::default()
             .with_label("Depth 3 Min/Max Sliders")
             .with_align(Align::Bottom.union(Align::Inside));
         ux_param_flex.add(&d3_label);
+
+        let d3_pass_chk = CheckButton::default()
+            .with_label("Depth 3 Pass")
+            .with_align(PASS_ALIGN);
+        ux_param_flex.add(&d3_pass_chk);
 
         let mut d3l_slider = HorValueSlider::default();
         d3l_slider.set_minimum(0.);
@@ -252,6 +304,16 @@ impl GUI {
             image_frame: img_display_frame,
             // msg_sender: s,
             msg_receiver: r,
+            ux_d1l_slider: d1l_slider,
+            ux_d1h_slider: d1h_slider,
+            ux_d1_pass_ck: d1_pass_chk,
+            ux_d2l_slider: d2l_slider,
+            ux_d2h_slider: d2h_slider,
+            ux_d2_pass_ck: d2_pass_chk,
+            ux_d3l_slider: d3l_slider,
+            ux_d3h_slider: d3h_slider,
+            ux_d3_pass_ck: d3_pass_chk,
+            ux_color_space_choice: color_space_choice,
         }//end struct construction
     }//end initialize()
 }//end impl for GUI
