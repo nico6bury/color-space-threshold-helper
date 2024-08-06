@@ -46,7 +46,6 @@ fn main() {
                         }//end matching whether we can convert the dynamic image to a shared image
                     },//end case that we can get the thresholding parameters 
                 }//end matching whether we can get thresholding parameters
-                println!("Got told to do thresholding, but that's not implemented yet.");
             },
             None => (),
         }//end matching message received
