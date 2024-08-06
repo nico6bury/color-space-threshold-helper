@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use color_space::{FromRgb, Hsl, Hsv, Lab, Rgb};
+use color_space::{Cmy, FromRgb, Hsl, Hsv, HunterLab, Lab, Lch, Luv, Rgb, Xyz, Yxy};
 use image::{ColorType, DynamicImage, GenericImage, GenericImageView, ImageError, ImageReader, Rgba};
 
 use crate::enums::ColorSpace;
@@ -123,6 +123,30 @@ pub fn convert_from_rgb<>(pixel: &Rgba<u8>, target: ColorSpace) -> [u8; 3] {
         },
         ColorSpace::YUV => {
             todo!();
+        },
+        ColorSpace::CMY => {
+            let cmy = Cmy::from_rgb(&rgb);
+            c64 = [cmy.c,cmy.m,cmy.y];
+        },
+        ColorSpace::HunterLab => {
+            let hunter_lab = HunterLab::from_rgb(&rgb);
+            c64 = [hunter_lab.l,hunter_lab.a,hunter_lab.b];
+        },
+        ColorSpace::LCH => {
+            let lch = Lch::from_rgb(&rgb);
+            c64 = [lch.l,lch.c,lch.h];
+        },
+        ColorSpace::LUV => {
+            let luv = Luv::from_rgb(&rgb);
+            c64 = [luv.l,luv.u,luv.v];
+        },
+        ColorSpace::XYZ => {
+            let xyz = Xyz::from_rgb(&rgb);
+            c64 = [xyz.x,xyz.y,xyz.z];
+        },
+        ColorSpace::YXY => {
+            let yxy = Yxy::from_rgb(&rgb);
+            c64 = [yxy.y1,yxy.x,yxy.y2];
         },
     };//end matching based on target color space
 
