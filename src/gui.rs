@@ -221,9 +221,10 @@ impl GUI {
             .with_align(Align::Bottom.union(Align::Inside));
         ux_param_flex.add(&d1_label);
 
-        let d1_pass_chk = CheckButton::default()
+        let mut d1_pass_chk = CheckButton::default()
             .with_label("Depth 1 Pass")
             .with_align(PASS_ALIGN);
+        d1_pass_chk.set(true);
         ux_param_flex.add(&d1_pass_chk);
 
         let mut d1l_slider = HorValueSlider::default();
@@ -248,9 +249,10 @@ impl GUI {
             .with_align(Align::Bottom.union(Align::Inside));
         ux_param_flex.add(&d2_label);
 
-        let d2_pass_chk = CheckButton::default()
+        let mut d2_pass_chk = CheckButton::default()
             .with_label("Depth 2 Pass")
             .with_align(PASS_ALIGN);
+        d2_pass_chk.set(true);
         ux_param_flex.add(&d2_pass_chk);
 
         let mut d2l_slider = HorValueSlider::default();
@@ -275,9 +277,10 @@ impl GUI {
             .with_align(Align::Bottom.union(Align::Inside));
         ux_param_flex.add(&d3_label);
 
-        let d3_pass_chk = CheckButton::default()
+        let mut d3_pass_chk = CheckButton::default()
             .with_label("Depth 3 Pass")
             .with_align(PASS_ALIGN);
+        d3_pass_chk.set(true);
         ux_param_flex.add(&d3_pass_chk);
 
         let mut d3l_slider = HorValueSlider::default();
