@@ -97,8 +97,8 @@ impl GUI {
 
         // define widgets for the image group
         let mut img_display_frame = Frame::default()
-            .with_pos(ux_image_group.x() + 10, ux_image_group.y() + 10)
-            .with_size(ux_image_group.w() - 20, ux_image_group.h() - 20);
+            .with_pos(ux_image_group.x() + 1, ux_image_group.y() + 1)
+            .with_size(ux_image_group.w() - 2, ux_image_group.h() - 2);
         img_display_frame.set_frame(FrameType::EngravedFrame);
         ux_image_group.add(&img_display_frame);
         let img_ref: Rc<RefCell<Option<SharedImage>>> = Rc::from(RefCell::from(None));

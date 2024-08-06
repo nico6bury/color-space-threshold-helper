@@ -10,6 +10,8 @@ fn main() {
     let recv = gui.get_receiver();
     while gui.wait() {
         match recv.recv() {
+            Some(InterfaceMessage::Quit) => gui.quit(),
+            Some(InterfaceMessage::Reset) => println!("Reset not yet supported"),
             Some(InterfaceMessage::LoadImage(img_path)) => {
                 println!("Got told to load an image at {}", img_path.to_string_lossy());
                 match SharedImage::load(img_path) {
@@ -20,8 +22,6 @@ fn main() {
                     },
                 }//end matching whether we loaded the shared image
             },
-            Some(InterfaceMessage::Quit) => gui.quit(),
-            Some(InterfaceMessage::Reset) => println!("Reset not yet supported"),
             Some(InterfaceMessage::ThreshColor(color)) => println!("Thresh COlor not yet supported. {:?}",color),
             None => (),
         }//end matching message received
