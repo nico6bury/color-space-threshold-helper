@@ -18,6 +18,7 @@ pub enum InterfaceMessage {
 /// - each implemented function of ColorSpace
 /// - process::convert_from_rgb()
 #[derive(Clone,Copy,Debug,PartialEq,Eq,PartialOrd,Ord)]
+#[non_exhaustive]
 pub enum ColorSpace {
     RGB,
     HSBorHSV,
