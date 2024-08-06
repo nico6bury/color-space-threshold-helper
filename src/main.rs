@@ -23,6 +23,7 @@ fn main() {
                 }//end matching whether we loaded the shared image
             },
             Some(InterfaceMessage::ThreshColor(color)) => println!("Thresh COlor not yet supported. {:?}",color),
+            Some(InterfaceMessage::DoThreshold) => println!("Got told to do thresholding, but that's not implemented yet."),
             None => (),
         }//end matching message received
     }//end main app loop
