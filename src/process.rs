@@ -27,4 +27,11 @@ impl ImageToProc {
             self.img.color(),
         )
     }//end deconstruct()
+
+    /// Creates a small, blank image
+    pub fn blank() -> ImageToProc {
+        ImageToProc {
+            img: DynamicImage::new(1, 1, ColorType::Rgb8)
+        }//end struct construction
+    }//end blank()
 }//end impl for ImageToProc
