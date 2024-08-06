@@ -11,6 +11,12 @@ pub enum InterfaceMessage {
     Quit
 }//end enum InterfaceMessage
 
+/// This enum represents the potential color space options
+/// for the user to threshold.
+/// In order to add a new ColorSpace, edit the following:
+/// - variants in ColorSpace
+/// - each implemented function of ColorSpace
+/// - process::convert_from_rgb()
 #[derive(Clone,Copy,Debug,PartialEq,Eq,PartialOrd,Ord)]
 pub enum ColorSpace {
     RGB,
@@ -25,7 +31,7 @@ impl ColorSpace {
     pub fn from_str(str: &str) -> Option<ColorSpace> {
         match str {
             "RGB" => Some(ColorSpace::RGB),
-            "HSB" | "HSV" | "HSBorHSV" => Some(ColorSpace::HSBorHSV),
+            "HSB" | "HSV" | "HSB or HSV" => Some(ColorSpace::HSBorHSV),
             "HSL" => Some(ColorSpace::HSL),
             "HSI" => Some(ColorSpace::HSI),
             "LabCIE" => Some(ColorSpace::LabCIE),
