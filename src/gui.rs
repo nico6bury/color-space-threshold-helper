@@ -171,6 +171,19 @@ impl GUI {
             }//end closure
         });
 
+        let mut now_thresh_btn = Button::default()
+            .with_label("Threshold");
+        now_thresh_btn.set_frame(BUTTON_FRAME);
+        now_thresh_btn.set_down_frame(BUTTON_DOWN_FRAME);
+        now_thresh_btn.clear_visible_focus();
+        ux_button_flex.add(&now_thresh_btn);
+        now_thresh_btn.set_callback({
+            let sender_clone = s.clone();
+            move |_| {
+                sender_clone.send(InterfaceMessage::DoThreshold);
+            }//end closure
+        });
+
         // define widgets for the param group
         let d1_label = Frame::default()
             .with_label("Depth 1 Min/Max Sliders")

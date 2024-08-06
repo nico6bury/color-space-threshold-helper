@@ -7,6 +7,7 @@ pub enum InterfaceMessage {
     Reset,
     /// Contains an rbg color
     ThreshColor((u8,u8,u8)),
+    DoThreshold,
     Quit
 }//end enum InterfaceMessage
 
