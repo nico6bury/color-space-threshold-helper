@@ -11,7 +11,7 @@ pub enum InterfaceMessage {
     Quit
 }//end enum InterfaceMessage
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone,Copy,Debug,PartialEq,Eq,PartialOrd,Ord)]
 pub enum ColorSpace {
     RGB,
     HSBorHSV,
