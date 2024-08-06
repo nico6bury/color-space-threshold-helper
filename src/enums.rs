@@ -50,4 +50,15 @@ impl ColorSpace {
             "YUV",
         ].iter().map(|s| s.to_string()).collect()
     }//end get_variants()
+
+    pub fn channel_names(&self) -> [String; 3] {
+        match self {
+            ColorSpace::RGB => ["Red".to_string(),"Green".to_string(),"Blue".to_string()],
+            ColorSpace::HSBorHSV => ["Hue".to_string(),"Saturation".to_string(),"Brightness/Value".to_string()],
+            ColorSpace::HSL => ["Hue".to_string(),"Saturation".to_string(),"Lightness".to_string()],
+            ColorSpace::HSI => ["Hue".to_string(),"Saturation".to_string(),"Intensity".to_string()],
+            ColorSpace::LabCIE => ["L".to_string(),"a".to_string(),"b".to_string()],
+            ColorSpace::YUV => ["Y".to_string(),"U".to_string(),"V".to_string()],
+        }//end matching self to channel names
+    }//end channel_names()
 }//end impl for ColorSpace
