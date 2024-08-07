@@ -1,3 +1,4 @@
+use core::f64;
 use std::path::PathBuf;
 
 use color_space::{Cmy, FromRgb, Hsl, Hsv, HunterLab, Lab, Lch, Luv, Rgb, Xyz, Yxy};
@@ -115,14 +116,48 @@ pub fn convert_from_rgb<>(pixel: &Rgba<u8>, target: ColorSpace) -> [u8; 3] {
             c64 = [hsl.h,hsl.s,hsl.l];
         },
         ColorSpace::HSI => {
-            todo!();
+            // conversion formula from:
+            // http://eng.usf.edu/~hady/courses/cap5400/rgb-to-hsi.pdf
+            let r = d1 / (d1 + d2 + d3);
+            let g = d2 / (d1 + d2 + d3);
+            let b = d3 / (d1 + d2 + d3);
+            let h;
+            if b <= g {
+                h = (
+                    0.5 * ((r - g) + (r - b))
+                    /
+                    ( (r - g).powi(2) + (r - b) * (g - b) ).powf(0.5)
+                ).acos();
+            } else {
+                h = 2. * f64::consts::PI - (
+                    0.5 * ( (r - g) + (r - b) )
+                    /
+                    ( (r - g).powi(2) + (r - b) * (g - b) ).powf(0.5)
+                ).acos();
+            }
+            let s = 1. - 3. * r.min(g).min(b);
+            let i = (d1 + d2 + d3) / (3. * 255.);
+            // convert values into ranges of [0,360], [0,100], [0,255]
+            let h = h * 180. / f64::consts::PI;
+            let s = s * 100.;
+            let i = i * 255.;
+            // normalize values into ranges of [0,255],[0,255],[0,255]
+            let h = (h * 255.) / 360.;
+            let s = (s * 255.) / 100.;
+            let i = i;
+            c64 = [h,s,i];
         },
         ColorSpace::LabCIE => {
             let lab = Lab::from_rgb(&rgb);
             c64 = [lab.l,lab.a,lab.b];
         },
         ColorSpace::YUV => {
-            todo!();
+            // conversion formula taken from:
+            // https://softpixel.com/~cwright/programming/colorspace/yuv/
+            let y = d1 * 0.299000 + d2 * 0.587000 + d3 * 0.114000;
+            let u = d1 * -0.168736 + d2 * -0.331264 + d3 * 0.5 + 128.;
+            let v = d1 * 0.500000 + d2 * -0.418688 + d3 * -0.081312 + 128.;
+            c64 = [y,u,v];
         },
         ColorSpace::CMY => {
             let cmy = Cmy::from_rgb(&rgb);
