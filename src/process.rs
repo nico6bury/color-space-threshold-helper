@@ -109,10 +109,12 @@ pub fn convert_from_rgb<>(pixel: &Rgba<u8>, target: ColorSpace) -> [u8; 3] {
         ColorSpace::RGB => c64 = [d1,d2,d3],
         ColorSpace::HSBorHSV => {
             let hsv = Hsv::from_rgb(&rgb);
+            // TODO: Convert s and v from [0,1] to [0,255]
             c64 = [hsv.h,hsv.s,hsv.v];
         },
         ColorSpace::HSL => {
             let hsl = Hsl::from_rgb(&rgb);
+            // TODO: Convert s and v from [0,1] to [0,255]
             c64 = [hsl.h,hsl.s,hsl.l];
         },
         ColorSpace::HSI => {
@@ -184,6 +186,8 @@ pub fn convert_from_rgb<>(pixel: &Rgba<u8>, target: ColorSpace) -> [u8; 3] {
             c64 = [yxy.y1,yxy.x,yxy.y2];
         },
     };//end matching based on target color space
+
+    if c64[0] > 100. || c64[1] > 1. || c64[2] > 1. {println!("{:?}", c64);}
 
     [
         c64[0].ceil().min(255.).max(0.) as u8,
