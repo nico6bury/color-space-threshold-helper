@@ -26,12 +26,12 @@ pub enum ColorSpace {
     HSI,
     LabCIE,
     YUV,
-    CMY,
-    HunterLab,
-    LCH,
-    LUV,
-    XYZ,
-    YXY,
+    // CMY,
+    // HunterLab,
+    // LCH,
+    // LUV,
+    // XYZ,
+    // YXY,
 }//end enum ColorSpace
 
 impl ColorSpace {
@@ -43,12 +43,12 @@ impl ColorSpace {
             "HSI" => Some(ColorSpace::HSI),
             "LabCIE" => Some(ColorSpace::LabCIE),
             "YUV" => Some(ColorSpace::YUV),
-            "CMY" => Some(ColorSpace::CMY),
-            "HunterLab" => Some(ColorSpace::HunterLab),
-            "LCH" => Some(ColorSpace::LCH),
-            "LUV" => Some(ColorSpace::LUV),
-            "XYZ" => Some(ColorSpace::XYZ),
-            "YXY" => Some(ColorSpace::YXY),
+            // "CMY" => Some(ColorSpace::CMY),
+            // "HunterLab" => Some(ColorSpace::HunterLab),
+            // "LCH" => Some(ColorSpace::LCH),
+            // "LUV" => Some(ColorSpace::LUV),
+            // "XYZ" => Some(ColorSpace::XYZ),
+            // "YXY" => Some(ColorSpace::YXY),
             _ => None,
         }//end matching str
     }//end from_str()
@@ -61,12 +61,12 @@ impl ColorSpace {
             "HSI",
             "LabCIE",
             "YUV",
-            "CMY",
-            "HunterLab",
-            "LCH",
-            "LUV",
-            "XYZ",
-            "YXY",
+            // "CMY",
+            // "HunterLab",
+            // "LCH",
+            // "LUV",
+            // "XYZ",
+            // "YXY",
         ].iter().map(|s| s.to_string()).collect()
     }//end get_variants()
 
@@ -78,12 +78,12 @@ impl ColorSpace {
             ColorSpace::HSI => ["Hue".to_string(),"Saturation".to_string(),"Intensity".to_string()],
             ColorSpace::LabCIE => ["L".to_string(),"a".to_string(),"b".to_string()],
             ColorSpace::YUV => ["Y".to_string(),"U".to_string(),"V".to_string()],
-            ColorSpace::CMY => ["Cyan".to_string(),"Magenta".to_string(),"Yellow".to_string()],
-            ColorSpace::HunterLab => ["".to_string(),"".to_string(),"".to_string()],
-            ColorSpace::LCH => ["Luminance".to_string(),"Chroma".to_string(),"Hue".to_string()],
-            ColorSpace::LUV => ["Luminance".to_string(),"U".to_string(),"V".to_string()],
-            ColorSpace::XYZ => ["X".to_string(),"Y".to_string(),"Z".to_string()],
-            ColorSpace::YXY => ["Y".to_string(),"X".to_string(),"Y".to_string()],
+            // ColorSpace::CMY => ["Cyan".to_string(),"Magenta".to_string(),"Yellow".to_string()],
+            // ColorSpace::HunterLab => ["".to_string(),"".to_string(),"".to_string()],
+            // ColorSpace::LCH => ["Luminance".to_string(),"Chroma".to_string(),"Hue".to_string()],
+            // ColorSpace::LUV => ["Luminance".to_string(),"U".to_string(),"V".to_string()],
+            // ColorSpace::XYZ => ["X".to_string(),"Y".to_string(),"Z".to_string()],
+            // ColorSpace::YXY => ["Y".to_string(),"X".to_string(),"Y".to_string()],
         }//end matching self to channel names
     }//end channel_names()
 }//end impl for ColorSpace

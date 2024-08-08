@@ -191,7 +191,7 @@ impl GUI {
             let sender_clone = s.clone();
             move |btn| {
                 let color_res = dialog::color_chooser(
-                    "Choose In-Threshold Color",
+                    "Choose Out-Of-Threshold Color",
                     dialog::ColorMode::Rgb
                 );
                 if let Some(color) = color_res {

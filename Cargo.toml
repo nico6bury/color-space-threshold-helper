@@ -1,9 +1,9 @@
 [package]
 name = "color-space-threshold-helper"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 [dependencies]
-color_space = "0.5.4"
 fltk = { version = "1.4.33", features = ["fltk-bundled"] }
 image = "0.25.2"
+palette = "0.7.6"
